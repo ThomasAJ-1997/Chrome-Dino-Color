@@ -1,0 +1,64 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.dinoChrome-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 12.5rem;
+}
+
+.score {
+  position: absolute;
+  font-size: 3vmin;
+  top: 1vmin;
+  right: 1vmin;
+  transform: translateY(-50%);
+}
+
+.menu-screen {
+  position: absolute;
+  font-size: 5vmin;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hide-graphics {
+  display: none;
+}
+
+.dino-character {
+  position: absolute;
+  left: 1%;
+  height: 30%;
+  bottom: calc(var(--bottom) * 1%);
+  --bottom: 0;
+}
+
+.dino-ground {
+  position: absolute;
+  width: 300%;
+  bottom: 0;
+  left: calc(var(--left) * 1%);
+  --left: 0;
+}
+
+.cactus {
+  position: absolute;
+  height: 30%;
+  left: calc(var(--left) * 1%);
+  bottom: 0;
+}
