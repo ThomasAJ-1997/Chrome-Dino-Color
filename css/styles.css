@@ -16,8 +16,8 @@ body {
 .dinoChrome-container {
   overflow: hidden;
   position: relative;
-  width: 100%;
-  height: 12.5rem;
+  /* width: 100%;
+  height: 12.5rem; */
 }
 
 .score {
