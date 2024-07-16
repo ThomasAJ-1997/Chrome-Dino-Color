@@ -48,7 +48,7 @@ body {
   --bottom: 0;
 }
 
-.dino-ground {
+.ground {
   position: absolute;
   width: 300%;
   bottom: 0;
