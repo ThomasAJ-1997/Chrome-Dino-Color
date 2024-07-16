@@ -8,6 +8,24 @@ const game_world_size = document.querySelector("[data-game]");
 setGameWorldSize();
 window.addEventListener("resize", setGameWorldSize);
 
+// UPDATE LOOP: GAME ITEMS
+let latestTime;
+
+function updateGameItems(time) {
+  if (latestTime == null) {
+    latestTime = time;
+    window.requestAnimationFrame(updateGameItems);
+    return;
+  }
+  const gameFrames = time - latestTime;
+  console.log(gameFrames);
+
+  latestTime = time;
+  window.requestAnimationFrame(updateGameItems);
+}
+
+window.requestAnimationFrame(updateGameItems);
+
 // SET GAME WORLD SIZE BY BROWSER
 function setGameWorldSize() {
   let worldScale;
