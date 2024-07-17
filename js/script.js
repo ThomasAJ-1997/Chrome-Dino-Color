@@ -4,10 +4,18 @@ const game_world_height = 30;
 const game_world_speed = 0.00001;
 
 // DATA ATTRIBUTES
+
+// Game attributes
 const game_world_size = document.querySelector("[data-game]");
 const ground_elements = document.querySelectorAll("[data-ground]");
 const score_elements = document.querySelector("[data-score]");
 const menu_elements = document.querySelector("[data-menu]");
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+// CHROME DINO MAIN CODE
 
 setGameWorldSize();
 window.addEventListener("resize", setGameWorldSize);
@@ -27,6 +35,7 @@ function updateGameItems(time) {
   const gameFrames = time - latestTime;
 
   updateGroundPosition(gameFrames, speedScale);
+  updateDinosaur(gameFrames, speedScale);
   increaseGameSpeed(gameFrames);
   scoreCounter(gameFrames);
 
@@ -55,6 +64,7 @@ function startMenu() {
   speedScale = 1;
   score = 0;
   groundRandomGenerator();
+  setupDinosaur();
   menu_elements.classList.add("hide-graphics");
   window.requestAnimationFrame(updateGameItems);
 }
@@ -102,6 +112,52 @@ function groundRandomGenerator() {
   setProperty(ground_elements[0], "--left", 0);
   setProperty(ground_elements[1], "--left", 300);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// DINOSAUR CONTROLS
+
+// Dinosaur attributes
+const dinosaur_elements = document.querySelector("[data-dinosaur]");
+const dinosaur_jump = 0.45;
+const dinosaur_frames = 2; // Dinosaur animation frames: imgs
+const dinosaur_frame_time = 100; // Animation changes 10 times every second
+const dinosaur_gravity_physics = 0.011;
+
+let dinosaurJumpAnimation;
+let dinosaurFrame;
+let frameTime;
+
+function setupDinosaur() {
+  dinosaurJumpAnimation = false;
+  dinosaurFrame = 0;
+  frameTime = 0;
+}
+
+function updateDinosaur(gameFrames, speedScale) {
+  dinosaurRun(gameFrames, speedScale);
+  dinosaurJump();
+}
+
+function dinosaurRun(gameFrames, speedScale) {
+  if (dinosaurJumpAnimation) {
+    dinosaur_elements.src = "/Chrome-Dino-Color/img/dino-stationary-color.png";
+    return;
+  }
+
+  if (frameTime >= dinosaur_frame_time) {
+    dinosaurFrame = (dinosaurFrame + 1) % dinosaur_frames;
+
+    dinosaur_elements.src = `/Chrome-Dino-Color/img/dino-run-color-${dinosaurFrame}.png`;
+
+    frameTime = -dinosaur_frame_time;
+  }
+  frameTime += gameFrames * speedScale;
+}
+
+function dinosaurJump() {}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
