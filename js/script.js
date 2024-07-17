@@ -39,7 +39,7 @@ function updateGameItems(time) {
   updateCactus(gameFrames, speedScale);
   increaseGameSpeed(gameFrames);
   scoreCounter(gameFrames);
-
+  if (gameOver()) return gameLost();
   // console.log(gameFrames);
 
   latestTime = time;
@@ -183,6 +183,10 @@ function dinosaurJumpCommand(e) {
   audioJumpSound();
 }
 
+function dinosaurHitBox() {
+  return dinosaur_elements.getBoundingClientRect();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +200,6 @@ function audioJumpSound() {
   );
   audio.play();
 }
-
 play.addEventListener("keydown", audioJumpSound);
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -252,6 +255,53 @@ function spawnCactus() {
 function randomNumberBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+function cactusHitBox() {
+  return [...document.querySelectorAll("[data-cactus]")].map((cactus) => {
+    return cactus.getBoundingClientRect(); // Hit box of Cactus image.
+  });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// GAME OVER FEATURE
+function gameOver() {
+  const dinosaur_hitbox = dinosaurHitBox();
+  return cactusHitBox().some((hit) => collision(hit, dinosaur_hitbox));
+}
+
+function collision(hit1, hit2) {
+  return (
+    hit1.left < hit2.right &&
+    hit1.top < hit2.bottom &&
+    hit1.right > hit2.left &&
+    hit1.bottom > hit2.top
+  );
+}
+
+function gameLost() {
+  dinosaurLose();
+  setTimeout(() => {
+    document.addEventListener("keydown", startMenu, { once: true });
+    menu_elements.classList.remove("hide-graphics");
+  }, 100);
+}
+
+function dinosaurLose() {
+  dinosaur_elements.src =
+    "/Users/thomasjones97/Documents/Developer/repo/Chrome Dino/Chrome-Dino-Color/img/dino-lose-color.png";
+  audioGameOverSound();
+}
+
+function audioGameOverSound() {
+  let audio = new Audio(
+    "/Users/thomasjones97/Documents/Developer/repo/Chrome Dino/Chrome-Dino-Color/audio/dinosaur-gameOver.mp3"
+  );
+  audio.play();
+}
+play.addEventListener(audioGameOverSound);
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
