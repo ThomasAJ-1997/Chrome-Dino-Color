@@ -1,18 +1,22 @@
 // VARIABLES
 const game_world_width = 100;
 const game_world_height = 30;
+const game_world_speed = 0.00001;
 
 // DATA ATTRIBUTES
 const game_world_size = document.querySelector("[data-game]");
 const ground_elements = document.querySelectorAll("[data-ground]");
+const score_elements = document.querySelector("[data-score]");
+const menu_elements = document.querySelector("[data-menu]");
 
 setGameWorldSize();
 window.addEventListener("resize", setGameWorldSize);
-
-groundRandomGenerator();
+document.addEventListener("keydown", startMenu, { once: true });
 
 // UPDATE LOOP: GAME ITEMS
 let latestTime;
+let speedScale;
+let score;
 
 function updateGameItems(time) {
   if (latestTime == null) {
@@ -21,7 +25,10 @@ function updateGameItems(time) {
     return;
   }
   const gameFrames = time - latestTime;
-  updateGroundPosition(gameFrames, 1);
+
+  updateGroundPosition(gameFrames, speedScale);
+  increaseGameSpeed(gameFrames);
+  scoreCounter(gameFrames);
 
   // console.log(gameFrames);
 
@@ -29,7 +36,32 @@ function updateGameItems(time) {
   window.requestAnimationFrame(updateGameItems);
 }
 
-window.requestAnimationFrame(updateGameItems);
+function increaseGameSpeed(gameFrames) {
+  speedScale = speedScale + gameFrames * game_world_speed;
+}
+
+function scoreCounter(gameFrames) {
+  score = score + gameFrames * 0.01;
+  score_elements.textContent = Math.floor(score);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// START MENU SYSTEM
+function startMenu() {
+  latestTime = null;
+  speedScale = 1;
+  score = 0;
+  groundRandomGenerator();
+  menu_elements.classList.add("hide-graphics");
+  window.requestAnimationFrame(updateGameItems);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
 
 // SET GAME WORLD SIZE BY BROWSER
 function setGameWorldSize() {
