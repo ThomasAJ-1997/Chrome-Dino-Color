@@ -124,40 +124,78 @@ const dinosaur_elements = document.querySelector("[data-dinosaur]");
 const dinosaur_jump = 0.45;
 const dinosaur_frames = 2; // Dinosaur animation frames: imgs
 const dinosaur_frame_time = 100; // Animation changes 10 times every second
-const dinosaur_gravity_physics = 0.011;
+const dinosaur_gravity_physics = 0.0015;
 
 let dinosaurJumpAnimation;
 let dinosaurFrame;
 let frameTime;
+let dinosaurVelocity;
 
 function setupDinosaur() {
   dinosaurJumpAnimation = false;
   dinosaurFrame = 0;
   frameTime = 0;
+  dinosaurVelocity = 0;
+  setProperty(dinosaur_elements, "--bottom", 0);
+  document.removeEventListener("keydown", dinosaurJumpCommand);
+  document.addEventListener("keydown", dinosaurJumpCommand);
 }
 
 function updateDinosaur(gameFrames, speedScale) {
   dinosaurRun(gameFrames, speedScale);
-  dinosaurJump();
+  dinosaurJump(gameFrames);
 }
 
 function dinosaurRun(gameFrames, speedScale) {
   if (dinosaurJumpAnimation) {
-    dinosaur_elements.src = "/Chrome-Dino-Color/img/dino-stationary-color.png";
+    dinosaur_elements.src =
+      "/Users/thomasjones97/Documents/Developer/repo/Chrome Dino/Chrome-Dino-Color/img/dino-stationary-color.png";
     return;
   }
 
   if (frameTime >= dinosaur_frame_time) {
     dinosaurFrame = (dinosaurFrame + 1) % dinosaur_frames;
 
-    dinosaur_elements.src = `/Chrome-Dino-Color/img/dino-run-color-${dinosaurFrame}.png`;
+    dinosaur_elements.src = `/Users/thomasjones97/Documents/Developer/repo/Chrome Dino/Chrome-Dino-Color/img/dino-run-color-${dinosaurFrame}.png`;
 
     frameTime = -dinosaur_frame_time;
   }
   frameTime += gameFrames * speedScale;
 }
 
-function dinosaurJump() {}
+function dinosaurJump(gameFrames) {
+  if (!dinosaurJumpAnimation) return;
+
+  updateProperty(dinosaur_elements, "--bottom", dinosaurVelocity * gameFrames);
+  if (getProperty(dinosaur_elements, "--bottom") <= 0) {
+    setProperty(dinosaur_elements, "--bottom", 0);
+    dinosaurJumpAnimation = false;
+  }
+  dinosaurVelocity -= dinosaur_gravity_physics * gameFrames;
+}
+
+function dinosaurJumpCommand(e) {
+  if (e.code !== "Space" || dinosaurJumpAnimation) return;
+  dinosaurVelocity = dinosaur_jump;
+  dinosaurJumpAnimation = true;
+  audioJumpSound();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// AUDIO SOUNDS
+
+let play = document.getElementById("dinosaur");
+function audioJumpSound() {
+  let audio = new Audio(
+    "/Users/thomasjones97/Documents/Developer/repo/Chrome Dino/Chrome-Dino-Color/audio/dinosaur-jump.mp3"
+  );
+  audio.play();
+}
+
+play.addEventListener("keydown", audioJumpSound);
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
