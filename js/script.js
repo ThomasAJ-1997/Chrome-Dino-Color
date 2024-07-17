@@ -36,6 +36,7 @@ function updateGameItems(time) {
 
   updateGroundPosition(gameFrames, speedScale);
   updateDinosaur(gameFrames, speedScale);
+  updateCactus(gameFrames, speedScale);
   increaseGameSpeed(gameFrames);
   scoreCounter(gameFrames);
 
@@ -65,6 +66,7 @@ function startMenu() {
   score = 0;
   groundRandomGenerator();
   setupDinosaur();
+  setupCactus();
   menu_elements.classList.add("hide-graphics");
   window.requestAnimationFrame(updateGameItems);
 }
@@ -196,6 +198,60 @@ function audioJumpSound() {
 }
 
 play.addEventListener("keydown", audioJumpSound);
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// CACTUS
+const cactus_speed = 0.05;
+const cactus_interval_minimum = 500; // Random Cactus generator when spawned in
+const cactus_interval_maximum = 2000; // min half a second and max 2 seconds
+
+let cactusTime;
+
+function setupCactus() {
+  cactusTime = cactus_interval_minimum;
+  document.querySelectorAll("[data-cactus]").forEach((cactus) => {
+    cactus.remove(); // Remove cactus when game is over, and start again.
+  });
+}
+
+function updateCactus(gameFrames, speedScale) {
+  document.querySelectorAll("[data-cactus]").forEach((cactus) => {
+    updateProperty(
+      cactus,
+      "--left",
+      gameFrames * speedScale * cactus_speed * -1
+    );
+    // Exact same speed as ground and dinosaur character.
+    if (getProperty(cactus, "--left") <= -100) {
+      cactus.remove();
+    } // cactus off screen: remove them.
+  });
+
+  if (cactusTime <= 0) {
+    spawnCactus();
+    cactusTime =
+      randomNumberBetween(cactus_interval_minimum, cactus_interval_maximum) /
+      speedScale;
+  }
+  cactusTime -= gameFrames;
+}
+
+function spawnCactus() {
+  const cactus = document.createElement("img");
+  cactus.dataset.cactus = true;
+  cactus.src =
+    "/Users/thomasjones97/Documents/Developer/repo/Chrome Dino/Chrome-Dino-Color/img/cactus-color.png";
+  cactus.classList.add("cactus");
+  setProperty(cactus, "--left", 100);
+  game_world_size.append(cactus);
+}
+
+function randomNumberBetween(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
